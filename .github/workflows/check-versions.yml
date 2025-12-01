@@ -4,7 +4,7 @@ on:
   schedule:
     - cron: '0 2 * * *'  # Daily at 2 AM UTC
   push:
-    branches: [ main ]
+    branches: [ master ]
   workflow_dispatch:
 
 jobs:
@@ -44,7 +44,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               workflow_id: 'package-tools.yml',
-              ref: 'main',
+              ref: 'master',
               inputs: {
                 triggered_by: '${{ steps.version_check.outputs.detected_update }}',
                 versions: JSON.stringify(versions)
