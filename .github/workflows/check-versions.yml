@@ -46,7 +46,7 @@ jobs:
               workflow_id: 'package-tools.yml',
               ref: 'master',
               inputs: {
-                triggered_by: '${{ steps.version_check.outputs.detected_update }}',
+                triggered_cause: '${{ steps.version_check.outputs.detected_update }}',
                 versions: JSON.stringify(versions)
               }
             });
