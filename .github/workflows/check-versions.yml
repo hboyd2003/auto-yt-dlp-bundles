@@ -1,0 +1,54 @@
+name: Check for New Versions
+
+on:
+  schedule:
+    - cron: '0 2 * * *'  # Daily at 2 AM UTC
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  check-versions:
+    runs-on: ubuntu-latest
+    outputs:
+      should_package: ${{ steps.version_check.outputs.should_package }}
+      versions_json: ${{ steps.version_check.outputs.versions }}
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            .github/scripts/check_versions.py
+          sparse-checkout-cone-mode: false
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Check for new versions
+        id: version_check
+        run: python .github/scripts/check_versions.py
+        env:
+          GITHUB_REPOSITORY: ${{ github.repository }}
+
+      - name: Trigger packaging workflow
+        if: steps.version_check.outputs.should_package == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const versions = JSON.parse('${{ steps.version_check.outputs.versions }}');
+            
+            await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'package-tools.yml',
+              ref: 'main',
+              inputs: {
+                triggered_by: '${{ steps.version_check.outputs.detected_update }}',
+                versions: JSON.stringify(versions)
+              }
+            });
+            
+            console.log('Versions:', versions);
