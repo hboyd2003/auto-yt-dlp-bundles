@@ -136,21 +136,18 @@ jobs:
             tar -xf ffmpeg_archive --strip-components=1
           elif [[ "${{ matrix.ffmpeg_asset }}" == *.zip ]]; then
             unzip -q ffmpeg_archive
-            # Move files from extracted folder to current directory
-            mv ffmpeg-*/bin/* . 2>/dev/null || mv ffmpeg-*/* . 2>/dev/null || true
-            rm -rf ffmpeg-*/
           fi
-          
-          # Clean up archive
-          rm -f ffmpeg_archive
-          
-          # Delete everything except FFmpeg binary
-          find . -type f ! -name "ffmpeg*" -delete 2>/dev/null || true
-          find . -type d -empty -delete 2>/dev/null || true
           
           if [[ "${{ matrix.os }}" != "windows" ]]; then
+            mv bin/ffmpeg .
             chmod +x ffmpeg 2>/dev/null || true
+            rm -rf {bin,doc,man}
+          else
+            mv ffmpeg-*/bin/ffmpeg.exe .
+            rm -rf ffmpeg-*
           fi
+          
+          rm -f ffmpeg_archive
 
       - name: Download & extract Deno
         id: deno
