@@ -82,7 +82,7 @@ jobs:
             output_name: bundle-linux-x64.tar.xz
             
           - os: linux
-            arch: arm64
+            arch: aarch64
             yt_dlp_asset: yt-dlp_linux_aarch64
             ffmpeg_asset: -linuxarm64-gpl-8.0.tar.xz
             deno_asset: deno-aarch64-unknown-linux-gnu.zip
