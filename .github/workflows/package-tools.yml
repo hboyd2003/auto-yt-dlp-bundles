@@ -300,7 +300,7 @@ jobs:
 
             ## Bundled Version
             - **yt-dlp**: ${{ needs.release_info.outputs.yt_dlp_release_tag }}
-            - **FFmpeg**: ${{ steps.release_info.outputs.ffmpeg_version }} from Nightly build ${{ needs.release_info.outputs.ffmpeg_release_tag }}
+            - **FFmpeg**: ${{ steps.release_info.outputs.ffmpeg_version }}
             - **Deno**: ${{ needs.release_info.outputs.deno_release_tag }}
             
             ## Available Platforms
