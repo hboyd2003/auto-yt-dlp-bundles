@@ -199,9 +199,9 @@ jobs:
 
       - name: Build archive
         run: |
-          XZ_OPT=-9 tar -cJf "${{ matrix.output_name }}" bundle/*
+          XZ_OPT=-9 tar -cJf "${{ matrix.output_name }}" -C bundle .
           
-          # Print archive size
+          ls bundle
           ls -lh "${{ matrix.output_name }}"
 
       - name: Generate SHA256 checksum
