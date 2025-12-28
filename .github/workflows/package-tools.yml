@@ -120,7 +120,7 @@ jobs:
             mv "${{ matrix.yt_dlp_asset }}" yt-dlp
           fi
 
-      - name: Download & extract FFmpeg
+      - name: Download & extract FFmpeg & FFprobe
         id: ffmpeg
         run: |
           cd bundle
@@ -137,13 +137,18 @@ jobs:
           elif [[ "${{ matrix.ffmpeg_asset }}" == *.zip ]]; then
             unzip -q ffmpeg_archive
           fi
-          
+
           if [[ "${{ matrix.os }}" != "windows" ]]; then
             mv bin/ffmpeg .
             chmod +x ffmpeg 2>/dev/null || true
+
+            mv bin/ffprobe .
+            chmod +x ffprobe 2>/dev/null || true
+
             rm -rf {bin,doc,man}
           else
             mv ffmpeg-*/bin/ffmpeg.exe .
+            mv ffmpeg-*/bin/ffprobe.exe .
             rm -rf ffmpeg-*
           fi
           
@@ -291,13 +296,13 @@ jobs:
             Release cause: ${{ github.event.inputs.triggered_cause }}
             
             ## Release source:
-            - FFmpeg: ${{ needs.release_info.outputs.ffmpeg_release_url }}
+            - FFmpeg/FFprobe: ${{ needs.release_info.outputs.ffmpeg_release_url }}
             - yt-dlp: ${{ needs.release_info.outputs.yt_dlp_release_url }}
             - Deno: ${{ needs.release_info.outputs.deno_release_url }}
 
             ## Bundled Version
             - **yt-dlp**: ${{ needs.release_info.outputs.yt_dlp_release_tag }}
-            - **FFmpeg**: ${{ steps.release_info.outputs.ffmpeg_version }}
+            - **FFmpeg/FFprobe**: ${{ steps.release_info.outputs.ffmpeg_version }}
             - **Deno**: ${{ needs.release_info.outputs.deno_release_tag }}
             
             ## Available Platforms
